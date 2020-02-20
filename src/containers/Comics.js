@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import Search from "../components/Search";
+import SearchComics from "../components/SearchComics";
 import Pagination from "../components/Pagination";
+import Cookies from "js-cookie";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import sad from "../assets/images/hulk-sad.jpg";
 
-function Comics() {
+function Comics({ myFavComics, setMyFavComics, favComicFromCookie }) {
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [numberPage, setNumberPage] = useState(1);
 
   // Fonction pour récupérer les data
   const fetchData = async numberPage => {
@@ -27,6 +28,26 @@ function Comics() {
     fetchData();
   }, []);
 
+  //Fonction pour mettre en favori
+
+  const handleFav = id => {
+    if (!favComicFromCookie) {
+      console.log("Il considère que favComicfromCookie est null ! ");
+
+      //Si je n'ai renseigné aucun cookie jusque là
+      Cookies.set("favComic", id, { expires: 2 }); // favComic, 1233112
+      setMyFavComics(favComicFromCookie);
+      console.log(">><<<<<<<<<>", myFavComics);
+    } else {
+      console.log("Il considère que fav est déjà rempli ! ");
+
+      Cookies.set("favComic", favComicFromCookie + "," + id, { expires: 2 });
+      setMyFavComics(favComicFromCookie);
+      console.log(">>>>>>", myFavComics);
+      console.log(typeof myFavComics);
+    }
+  };
+
   return (
     <>
       <div className="banner">
@@ -36,7 +57,7 @@ function Comics() {
         </div>
       </div>
 
-      <Search setData={setData} />
+      <SearchComics setData={setData} />
 
       {isLoading === true ? (
         <div className="container loading"> Loading ... </div>
@@ -47,39 +68,28 @@ function Comics() {
               {data.results.map(result => {
                 // const LinkToComics = `/comics/${result.id}`;
                 return (
-                  <div
-                    key={result.id}
-                    className="card"
-                    // onClick={() => {
-                    //   history.push(LinkToCharacter, {
-                    //     name: result.name
-                    // picture:
-                    //   result.thumbnail.path +
-                    //   "/standard_xlarge." +
-                    //   result.thumbnail.extension
-                    // });
-                    // }}
-                  >
-                    {/* <Link
-                  to={{
-                    pathname: LinkToCharacter,
-                    infoCharacter: {
-                      name: "Hello"
-                    }
-                  }}
-                  style={{ textDecoration: "none", color: "black" }}
-                  id={result.id}
-                > */}
+                  <div key={result.id} className="comic-bloc">
                     <img
                       src={
                         result.thumbnail.path +
-                        "/standard_xlarge." +
+                        "/portrait_fantastic." +
                         result.thumbnail.extension
                       }
                       alt={result.title}
                       className="card-image"
                     />
-                    <div className="card-details">
+
+                    <FontAwesomeIcon
+                      className="icon-2-heart"
+                      icon="heart"
+                      onClick={() => {
+                        handleFav(result.id);
+                        console.log(result.id);
+                        alert("Booked as Fav !");
+                      }}
+                    />
+
+                    <div className="comic-details">
                       <h2>{result.title} </h2>
                       <p>{result.description} </p>
                     </div>

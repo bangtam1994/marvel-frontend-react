@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import Search from "../components/Search";
+import { useHistory } from "react-router-dom";
+import SearchCharacter from "../components/SearchCharacter";
 import Pagination from "../components/Pagination";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Cookies from "js-cookie";
 
 import sad from "../assets/images/hulk-sad.jpg";
-function Characters() {
+
+function Characters({
+  myFavCharacters,
+  setMyFavCharacters,
+  favCharacFromCookie
+}) {
   const [data, setData] = useState({});
-  console.log("LE DATA.results EST //////// ", data.results);
   const [isLoading, setIsLoading] = useState(true);
-  const [numberPage, setNumberPage] = useState(1);
+  let history = useHistory();
 
   // Fonction pour récupérer les data
   const fetchData = async numberPage => {
@@ -18,7 +24,6 @@ function Characters() {
         `http://localhost:4000/characters?page=${numberPage}`
       );
       setData(response.data.data);
-      console.log("mon data est", data);
       setIsLoading(false);
     } catch (error) {
       console.log(error.message);
@@ -29,6 +34,26 @@ function Characters() {
     fetchData();
   }, []);
 
+  //Fonction pour mettre en favori
+
+  const handleFav = id => {
+    if (!favCharacFromCookie) {
+      console.log("Il considère que favCharacfromCookie est null ! ");
+
+      //Si je n'ai renseigné aucun cookie jusque là
+      Cookies.set("favCharac", id, { expires: 2 }); // favCharac, 1233112
+      setMyFavCharacters(favCharacFromCookie);
+      console.log(">><<<<<<<<<>", myFavCharacters);
+    } else {
+      console.log("Il considère que fav est déjà rempli ! ");
+
+      Cookies.set("favCharac", favCharacFromCookie + "," + id, { expires: 2 });
+      setMyFavCharacters(favCharacFromCookie);
+      console.log(">>>>>>", myFavCharacters);
+      console.log(typeof myFavCharacters);
+    }
+  };
+
   return (
     <>
       <div className="banner">
@@ -38,7 +63,7 @@ function Characters() {
         </div>
       </div>
 
-      <Search setData={setData} />
+      <SearchCharacter setData={setData} />
 
       {isLoading === true ? (
         <div className="container loading"> Loading ... </div>
@@ -53,40 +78,33 @@ function Characters() {
                   <div
                     key={result.id}
                     className="card"
-                    // onClick={() => {
-                    //   history.push(LinkToCharacter, {
-                    //     name: result.name
-                    // picture:
-                    //   result.thumbnail.path +
-                    //   "/standard_xlarge." +
-                    //   result.thumbnail.extension
-                    // });
-                    // }}
+                    onClick={() => {
+                      history.push(LinkToCharacter);
+                    }}
                   >
-                    <Link
-                      to={{
-                        pathname: LinkToCharacter,
-                        infoCharacter: {
-                          name: "Hello"
-                        }
+                    <img
+                      src={
+                        result.thumbnail.path +
+                        "/standard_xlarge." +
+                        result.thumbnail.extension
+                      }
+                      alt={result.name}
+                      className="card-image"
+                    />
+                    <FontAwesomeIcon
+                      className="icon-heart"
+                      icon="heart"
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleFav(result.id);
+                        alert("Booked as Fav !");
                       }}
-                      style={{ textDecoration: "none", color: "black" }}
-                      id={result.id}
-                    >
-                      <img
-                        src={
-                          result.thumbnail.path +
-                          "/standard_xlarge." +
-                          result.thumbnail.extension
-                        }
-                        alt={result.name}
-                        className="card-image"
-                      />
-                      <div className="card-details">
-                        <h2>{result.name} </h2>
-                        <p>{result.description} </p>
-                      </div>
-                    </Link>
+                    />
+
+                    <div className="card-details">
+                      <h2>{result.name} </h2>
+                      <p>{result.description} </p>
+                    </div>
                   </div>
                 );
               })}

@@ -71,6 +71,8 @@ function Header({ user, setUser }) {
                 onClick={() => {
                   Cookies.remove("token");
                   setUser(null);
+                  setModal(false);
+
                   history.push("/");
                 }}
               >

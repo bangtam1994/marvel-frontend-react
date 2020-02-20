@@ -18,15 +18,26 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faSearch,
   faChevronRight,
-  faChevronLeft
+  faChevronLeft,
+  faHeart
 } from "@fortawesome/free-solid-svg-icons";
-library.add(faSearch, faChevronRight, faChevronLeft);
+library.add(faSearch, faChevronRight, faChevronLeft, faHeart);
 
 function App() {
   //Va gérer l'état du cookie (présent ou non)
   const tokenFromCookie = Cookies.get("token");
   const [user, setUser] = useState(
     tokenFromCookie ? { token: tokenFromCookie } : null
+  );
+
+  const favCharacFromCookie = Cookies.get("favCharac");
+  const [myFavCharacters, setMyFavCharacters] = useState(
+    favCharacFromCookie ? favCharacFromCookie : null
+  );
+
+  const favComicFromCookie = Cookies.get("favComic");
+  const [myFavComics, setMyFavComics] = useState(
+    favComicFromCookie ? favComicFromCookie : null
   );
 
   return (
@@ -40,17 +51,30 @@ function App() {
           <Signup />
         </Route>
         <Route exact path="/characters">
-          <Characters />
+          <Characters
+            favCharacFromCookie={favCharacFromCookie}
+            myFavCharacters={myFavCharacters}
+            setMyFavCharacters={setMyFavCharacters}
+          />
         </Route>
         <Route path="/character/:id">
           <Character />
         </Route>
 
         <Route path="/comics">
-          <Comics />
+          <Comics
+            favComicFromCookie={favComicFromCookie}
+            myFavComics={myFavComics}
+            setMyFavComics={setMyFavComics}
+          />
         </Route>
         <Route path="/favorites">
-          <Favorites />
+          <Favorites
+            myFavCharacters={myFavCharacters}
+            setMyFavCharacters={setMyFavCharacters}
+            myFavComics={myFavComics}
+            setMyFavComics={setMyFavComics}
+          />
         </Route>
       </Switch>
 

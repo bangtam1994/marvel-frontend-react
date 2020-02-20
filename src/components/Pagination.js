@@ -9,7 +9,6 @@ function Pagination({ data, setData, fetchData, setIsLoading }) {
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
   }
-  console.log(pageNumbers); // [1,2,3,4..]
 
   return (
     <div className="pagination container d-flex">

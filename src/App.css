@@ -278,6 +278,8 @@ nav {
   text-transform: uppercase;
   color: white;
   box-shadow: 10px 0px 10px rgba(99, 94, 94, 0.818);
+  position: relative;
+  cursor: pointer;
 }
 
 .card:hover h2 {
@@ -365,16 +367,49 @@ nav {
   margin: 30px auto;
 }
 
+.characterBloc .card {
+  background-color: rgb(41, 40, 40);
+  width: 500px;
+  height: 225px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.characterBloc h3 {
+  color: #ee151e;
+  font-size: 30px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
 .characterComicBloc {
   margin: 30px;
   display: flex;
   align-items: center;
 }
 
-.characterComicBloc img {
+.characterBloc .character-comic-image {
   object-fit: cover;
   object-position: center;
-  box-shadow: 10px 0px 20px grey;
+  border: none;
+}
+
+.characterBloc .card:hover {
+  height: 240px;
+  width: 600px;
+}
+
+.characterBloc .card:hover img {
+  height: 240px;
+  transition: 0.3s;
+}
+
+.characterBloc .character-comic-description {
+  display: flex;
+  flex-direction: column;
+  margin: 30px;
 }
 
 .characterComicBloc h2 {
@@ -384,8 +419,9 @@ nav {
 }
 
 .characterComicBloc .character-comic-description {
+  text-align: justify;
   width: 500px;
-  margin: 0 20px;
+  margin: 0 70px 0 30px;
   box-sizing: border-box;
 }
 
@@ -444,6 +480,54 @@ nav {
   align-items: center;
 }
 
+.comic-bloc {
+  margin: 30px 10px;
+  display: flex;
+  align-items: center;
+  width: 580px;
+  height: 252px;
+  position: relative;
+}
+
+.comic-bloc img {
+  object-fit: contain;
+  object-position: center;
+  box-shadow: 10px 0px 20px grey;
+}
+
+.comic-bloc .icon-2-heart {
+  color: rgba(255, 249, 249, 0.845);
+  font-size: 20px;
+  position: absolute;
+  z-index: 111;
+  top: 10px;
+  left: 135px;
+  cursor: pointer;
+}
+
+.icon-2-heart:hover {
+  font-size: 25px;
+  color: #ee151e;
+  transition: 0.3s;
+}
+
+.comic-bloc h2 {
+  width: 200px;
+  margin: 20px;
+  box-sizing: border-box;
+}
+
+.comic-bloc .comic-details {
+  margin: 0 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.comic-details p {
+  overflow-y: hidden;
+  height: 100px;
+}
+
 /*  ****************  FAVORITES  *************** */
 
 .banner-favorites {
@@ -457,6 +541,31 @@ nav {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-bottom: 50px;
+}
+
+.icon-heart {
+  color: rgba(255, 255, 255, 0.338);
+  font-size: 20px;
+  position: absolute;
+  z-index: 11;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}
+
+.icon-heart:hover {
+  font-size: 25px;
+  color: #ee151e;
+  transition: 0.3s;
+}
+
+.favorites-list {
+  background-color: pink;
+  display: flex;
+  flex-wrap: wrap;
+  cursor: pointer;
+  margin: 20px;
 }
 
 /*  ****************  FOOTER  *************** */

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 
-const Search = ({ setData }) => {
+const SearchCharacter = ({ setData }) => {
   const [searchInput, setSearchInput] = useState("");
   const handleSubmit = async event => {
     event.preventDefault();
@@ -33,4 +33,4 @@ const Search = ({ setData }) => {
   );
 };
 
-export default Search;
+export default SearchCharacter;

@@ -19,7 +19,7 @@ function Header({ user, setUser }) {
 
     await axios
       .post(
-        "http://localhost:4000/user/log_in",
+        "https://marvel-backend-bt.herokuapp.com/user/log_in",
 
         {
           email: email,

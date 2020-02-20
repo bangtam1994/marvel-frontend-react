@@ -7,7 +7,7 @@ const SearchComics = ({ setData }) => {
   const handleSubmit = async event => {
     event.preventDefault();
     const response = await axios.get(
-      `http://localhost:4000/comics?search=${searchInput}`
+      `https://marvel-backend-bt.herokuapp.com/comics?search=${searchInput}`
     );
     console.log("SEARCH INPUT COMICS", searchInput);
     setData(response.data.data);
@@ -28,8 +28,6 @@ const SearchComics = ({ setData }) => {
         icon="search"
         onClick={handleSubmit}
       />
-
-      {/* <input  value="Rechercher" name="search" /> */}
     </div>
   );
 };

@@ -1,6 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function Pagination({ data, setData, fetchData, setIsLoading }) {
   const totalPages = Math.ceil(data.total / 100);

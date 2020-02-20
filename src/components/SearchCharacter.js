@@ -7,7 +7,7 @@ const SearchCharacter = ({ setData }) => {
   const handleSubmit = async event => {
     event.preventDefault();
     const response = await axios.get(
-      `http://localhost:4000/characters?search=${searchInput}`
+      `https://marvel-backend-bt.herokuapp.com/characters?search=${searchInput}`
     );
     setData(response.data.data);
   };

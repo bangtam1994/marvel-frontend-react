@@ -15,7 +15,7 @@ function Comics({ myFavComics, setMyFavComics, favComicFromCookie }) {
   const fetchData = async numberPage => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/comics?page=${numberPage}`
+        `https://marvel-backend-bt.herokuapp.com/comics?page=${numberPage}`
       );
       setData(response.data.data);
       setIsLoading(false);
@@ -66,7 +66,6 @@ function Comics({ myFavComics, setMyFavComics, favComicFromCookie }) {
           {data.results.length !== 0 ? (
             <div className="characters-list container">
               {data.results.map(result => {
-                // const LinkToComics = `/comics/${result.id}`;
                 return (
                   <div key={result.id} className="comic-bloc">
                     <img
@@ -84,8 +83,7 @@ function Comics({ myFavComics, setMyFavComics, favComicFromCookie }) {
                       icon="heart"
                       onClick={() => {
                         handleFav(result.id);
-                        console.log(result.id);
-                        alert("Booked as Fav !");
+                        alert("Comic booked as Fav !");
                       }}
                     />
 
@@ -93,7 +91,6 @@ function Comics({ myFavComics, setMyFavComics, favComicFromCookie }) {
                       <h2>{result.title} </h2>
                       <p>{result.description} </p>
                     </div>
-                    {/* </Link> */}
                   </div>
                 );
               })}

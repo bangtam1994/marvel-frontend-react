@@ -36,7 +36,7 @@ a {
 
 .landing {
   background-image: url("https://www.tomsguide.fr/content/uploads/sites/2/2018/05/mcu-03.jpg");
-  height: 700px;
+  height: 820px;
   width: 100%;
   z-index: -11;
   object-fit: cover;
@@ -235,7 +235,7 @@ nav {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 300px;
+  /* height: 300px; */
 }
 
 /*  ****************  CHARACTERS  *************** */
@@ -356,8 +356,8 @@ nav {
 }
 
 .sad {
-  height: 250px;
-  width: 200px;
+  height: 330px;
+  width: 270px;
   margin: 20px;
   border-radius: 20px;
 }
@@ -560,19 +560,56 @@ nav {
   transition: 0.3s;
 }
 
-.favorites-list {
-  background-color: pink;
+.empty {
   display: flex;
   flex-wrap: wrap;
   cursor: pointer;
-  margin: 20px;
+}
+
+.favBloc {
+  color: white;
+  font-weight: 300;
+  margin: 30px;
+  padding: 40px;
+  width: 400px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgb(58, 58, 58);
+  box-shadow: 10px 0px 20px grey;
+  border-radius: 5px;
+}
+
+.favBloc:hover {
+  width: 410px;
+  height: 110px;
+  transition: 0.3s;
+}
+
+.favBloc h2 {
+  font-size: 20px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+}
+.favorites-list {
+  line-height: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  cursor: pointer;
+}
+
+.favorites-list:hover {
+  color: rgb(223, 15, 15);
 }
 
 /*  ****************  FOOTER  *************** */
 
 footer {
   background-color: rgb(206, 204, 198);
-  bottom: 0;
+  /* position: absolute;
+  bottom: 0vh; */
   width: 100%;
   height: 3.5rem;
   box-sizing: border-box;

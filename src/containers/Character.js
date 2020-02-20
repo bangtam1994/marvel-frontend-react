@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
-import Cookies from "js-cookie";
 
 import { useParams } from "react-router-dom";
 
@@ -11,26 +9,24 @@ function Character(props) {
   // const { name } = location.state;
   // console.log(props.location.infoCharacter);
   const { id } = useParams();
-  console.log("L'ID EST :", id);
 
   const [infoCharacter, setInfoCharacter] = useState({});
   const [comicsCharacter, setComicsCharacter] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
-  const myLinkForComics = "http://localhost:4000/character/" + id;
-  const myLinkForCharacter = "http://localhost:4000/character/info/" + id;
+  const myLinkForComics =
+    "https://marvel-backend-bt.herokuapp.com/character/" + id;
+  const myLinkForCharacter =
+    "https://marvel-backend-bt.herokuapp.com/character/info/" + id;
 
   const fetchData = async () => {
     try {
-      console.log(id);
-
       const response = await axios.get(myLinkForComics);
       setComicsCharacter(response.data.data);
 
       const response2 = await axios.get(myLinkForCharacter);
       setInfoCharacter(response2.data.data);
 
-      console.log("----->", infoCharacter);
       setIsLoading(false);
     } catch (error) {
       console.log(error.message);

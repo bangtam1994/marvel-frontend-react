@@ -46,8 +46,9 @@ function App() {
   const [favCharacFromUser, setFavCharacFromUser] = useState([]);
   const [favComicFromUser, setFavComicFromUser] = useState([]);
 
-  // Message quand un favori est ajouté
+  // Message quand un favori est ajouté ou retiré
   const [favAdded, setFavAdded] = useState(false);
+  const [favRemoved, setFavRemoved] = useState(false);
 
   return (
     <Router>
@@ -55,7 +56,7 @@ function App() {
         setUser={setUser}
         user={user}
         favAdded={favAdded}
-        setFavAdded={setFavAdded}
+        favRemoved={favRemoved}
       />
       <Switch>
         <Route exact path="/">
@@ -77,6 +78,7 @@ function App() {
             token={tokenFromCookie}
             user={user}
             setFavAdded={setFavAdded}
+            setFavRemoved={setFavRemoved}
           />
           {/* </Helmet> */}
         </Route>

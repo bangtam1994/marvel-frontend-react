@@ -12,11 +12,11 @@ function Characters({
   myFavCharacters,
   setMyFavCharacters,
   favCharacFromCookie,
-  token,
   // favCharacFromUser,
   // setFavCharacFromUser,
   user,
-  setFavAdded
+  setFavAdded,
+  setFavRemoved
 }) {
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -160,9 +160,9 @@ function Characters({
                           onClick={e => {
                             e.stopPropagation();
                             handleRemoveFav(result.id);
-                            setFavAdded(true);
+                            setFavRemoved(true);
                             setTimeout(() => {
-                              setFavAdded(false);
+                              setFavRemoved(false);
                             }, 2000);
                           }}
                         />

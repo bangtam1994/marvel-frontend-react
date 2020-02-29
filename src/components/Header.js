@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Cookies from "js-cookie";
 import axios from "axios";
 
-function Header({ user, setUser, favAdded, setFavAdded }) {
+function Header({ user, setUser, favAdded, favRemoved }) {
   const [modal, setModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -102,6 +102,17 @@ function Header({ user, setUser, favAdded, setFavAdded }) {
                     className="favorites-message-icon"
                   />
                   <div className="favorites-message"> Added to favorites!</div>
+                </div>
+              )}
+              {favRemoved === true && (
+                <div className="favorites-message-bloc">
+                  <FontAwesomeIcon
+                    icon="sort-up"
+                    className="favorites-message-icon"
+                  />
+                  <div className="favorites-message">
+                    Removed from favorites!
+                  </div>
                 </div>
               )}
             </Link>

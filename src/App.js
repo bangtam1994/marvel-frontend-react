@@ -96,6 +96,7 @@ function App() {
             setFavComicFromUser={setFavComicFromUser}
             user={user}
             setFavAdded={setFavAdded}
+            setFavRemoved={setFavRemoved}
           />
         </Route>
         <Route path="/favorites">

@@ -7,7 +7,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import sad from "../assets/images/hulk-sad.jpg";
 
-function Comics({ myFavComics, setMyFavComics, favComicFromCookie }) {
+function Comics({
+  myFavComics,
+  setMyFavComics,
+  favComicFromCookie,
+  setFavAdded,
+  setFavComicFromUser,
+  user,
+  token
+}) {
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
@@ -28,23 +36,50 @@ function Comics({ myFavComics, setMyFavComics, favComicFromCookie }) {
     fetchData();
   }, []);
 
-  //Fonction pour mettre en favori
+  //Fonction pour mettre en favori COOKIE
 
   const handleFav = id => {
     if (!favComicFromCookie) {
-      console.log("Il considère que favComicfromCookie est null ! ");
-
       //Si je n'ai renseigné aucun cookie jusque là
       Cookies.set("favComic", id, { expires: 2 }); // favComic, 1233112
       setMyFavComics(favComicFromCookie);
-      console.log(">><<<<<<<<<>", myFavComics);
     } else {
-      console.log("Il considère que fav est déjà rempli ! ");
-
       Cookies.set("favComic", favComicFromCookie + "," + id, { expires: 2 });
       setMyFavComics(favComicFromCookie);
-      console.log(">>>>>>", myFavComics);
-      console.log(typeof myFavComics);
+    }
+  };
+
+  // Fonction pour remove des favoris Cookies
+  const handleRemoveFav = id => {
+    let fav = Cookies.get("favComic");
+    let tabFav = JSON.parse("[" + fav + "]");
+    let index = tabFav.indexOf(id);
+    if (index > -1) {
+      tabFav.splice(index, 1);
+    }
+    Cookies.set("favComic", tabFav.toString(), { expires: 2 });
+  };
+
+  // Fonction pour mettre en favori MONGODB
+
+  const handleFavUser = async id => {
+    try {
+      const response = await axios.post(
+        `http://localhost:4000/user/add/favorites`,
+        {
+          marvelId: id
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        }
+      );
+      console.log("réponse de l'API pour le Fav USER:", response.data);
+      alert("Booked in backend !");
+      setFavComicFromUser(response.data.user.favorites); //Les favoris (tableau) sont une clé dans l'objet user du backend.
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
@@ -66,6 +101,17 @@ function Comics({ myFavComics, setMyFavComics, favComicFromCookie }) {
           {data.results.length !== 0 ? (
             <div className="characters-list container">
               {data.results.map(result => {
+                let iconStatus = false;
+                if (
+                  favComicFromCookie &&
+                  favComicFromCookie
+                    .split(",")
+                    .indexOf(result.id.toString()) !== -1
+                ) {
+                  //Si j'ai trouvé mon id dans mes cookies
+                  iconStatus = true;
+                }
+
                 return (
                   <div key={result.id} className="comic-bloc">
                     <img
@@ -77,15 +123,56 @@ function Comics({ myFavComics, setMyFavComics, favComicFromCookie }) {
                       alt={result.title}
                       className="card-image"
                     />
-
-                    <FontAwesomeIcon
-                      className="icon-2-heart"
-                      icon="heart"
-                      onClick={() => {
-                        handleFav(result.id);
-                        alert("Comic booked as Fav !");
-                      }}
-                    />
+                    {user ? (
+                      <FontAwesomeIcon
+                        className={
+                          // favActivated === true
+                          //   ? "icon-heart activated" :
+                          "icon-2-heart"
+                        }
+                        icon="heart"
+                        onClick={e => {
+                          e.stopPropagation();
+                          handleFavUser(result.id);
+                          alert("Booked as Fav!");
+                        }}
+                      />
+                    ) : (
+                      // Si pas connecté : favoris en cookie
+                      <>
+                        {iconStatus === true ? (
+                          <FontAwesomeIcon
+                            className={
+                              // favActivated === true
+                              //   ? "icon-heart activated" :
+                              "icon-2-heart-active"
+                            }
+                            icon="heart"
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleRemoveFav(result.id);
+                              setFavAdded(true);
+                              setTimeout(() => {
+                                setFavAdded(false);
+                              }, 2000);
+                            }}
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            className="icon-2-heart"
+                            icon="heart"
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleFav(result.id);
+                              setFavAdded(true);
+                              setTimeout(() => {
+                                setFavAdded(false);
+                              }, 2000);
+                            }}
+                          />
+                        )}
+                      </>
+                    )}
 
                     <div className="comic-details">
                       <h2>{result.title} </h2>

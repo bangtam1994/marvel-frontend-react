@@ -8564,6 +8564,7 @@ fsevents@^1.2.7:
     js-cookie: ^2.2.1
     react: ^16.12.0
     react-dom: ^16.12.0
+    react-helmet: ^5.2.1
     react-router-dom: ^5.1.2
     react-scripts: 3.4.0
   languageName: unknown
@@ -11012,7 +11013,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.5.10, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.5.10, prop-types@npm:^15.5.4, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
@@ -11293,6 +11294,27 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"react-fast-compare@npm:^2.0.2":
+  version: 2.0.4
+  resolution: "react-fast-compare@npm:2.0.4"
+  checksum: a9f1480c33cab46abc716a091b6c3bd774abe2eacb974dd240e80aa7b77d92d70d63081853833fd9efd720b5575b36d4f8a8ea2d0e84f257d4ae5c1af3c65e21
+  languageName: node
+  linkType: hard
+
+"react-helmet@npm:^5.2.1":
+  version: 5.2.1
+  resolution: "react-helmet@npm:5.2.1"
+  dependencies:
+    object-assign: ^4.1.1
+    prop-types: ^15.5.4
+    react-fast-compare: ^2.0.2
+    react-side-effect: ^1.1.0
+  peerDependencies:
+    react: ">=15.0.0"
+  checksum: e952f7f2aafe5439c4fc6a215abe8961d9354f8876163dacd2049150ea1f45c698ac0854689cda07751bc2baacd064cf8356d676a1a5e093d967e26b546ee703
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.6.0, react-is@npm:^16.7.0, react-is@npm:^16.8.1, react-is@npm:^16.8.4":
   version: 16.12.0
   resolution: "react-is@npm:16.12.0"
@@ -11405,6 +11427,17 @@ fsevents@^1.2.7:
   bin:
     react-scripts: ./bin/react-scripts.js
   checksum: 3811e185f2838877708b28fe2f87246c66c48f0e890f394df8d8e84f3bc94c0e8e85da1aa8cdfe1b9b1c5fe410c327fd3354f685a8e6016623a79646cf1a1a49
+  languageName: node
+  linkType: hard
+
+"react-side-effect@npm:^1.1.0":
+  version: 1.2.0
+  resolution: "react-side-effect@npm:1.2.0"
+  dependencies:
+    shallowequal: ^1.0.1
+  peerDependencies:
+    react: ^0.13.0 || ^0.14.0 || ^15.0.0 || ^16.0.0
+  checksum: ef0f6b0c3e9e67c8dd4be2ea2388e5b96920c645b48a70bce7543cbd71ede26ae8b8e829bd10949f3b252c35df057f8b8cfdea4e4cdcb4427cead55fa0c0e091
   languageName: node
   linkType: hard
 
@@ -12297,6 +12330,13 @@ resolve@1.15.0:
   dependencies:
     kind-of: ^6.0.2
   checksum: 45d71829b3cc7c66ae531bb3a7fd7209cced093ec7fdfcd6a1edd29a60ff96d1a11e418c9ea9f0c378586f20ece3c1579a40e58e07c2e7c79ca8bc10778d1efa
+  languageName: node
+  linkType: hard
+
+"shallowequal@npm:^1.0.1":
+  version: 1.1.0
+  resolution: "shallowequal@npm:1.1.0"
+  checksum: 6765dbec484a9c0d0cf67482d9da0653b556ea32960361b4ae2d2a7e0025f54ba3dce50af335ba44f0ce1c1dabda9ae95bba13827b667951f60d5a43b7eafb03
   languageName: node
   linkType: hard
 

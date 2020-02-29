@@ -5,11 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Cookies from "js-cookie";
 import axios from "axios";
 
-function Header({ user, setUser }) {
+function Header({ user, setUser, favAdded, setFavAdded }) {
   const [modal, setModal] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   let history = useHistory();
 
   // fonction pour submit connexion de la modal
@@ -50,55 +49,65 @@ function Header({ user, setUser }) {
   return (
     <>
       {/* header  */}
-      <header>
-        <div className="container d-flex">
-          <Link to="/">
-            <img src={logo} alt="Logo Marvel" />
-          </Link>
+      <div className="headerBloc">
+        <header>
+          <div className="container d-flex">
+            <Link to="/">
+              <img src={logo} alt="Logo Marvel" />
+            </Link>
 
-          <div
-            className="login"
-            onClick={() => {
-              setModal(true);
-            }}
-          >
-            {user === null ? (
-              // <Link to="/user/log_in">
-              <div>LOGIN </div>
-            ) : (
-              // </Link>
-              <div
-                onClick={() => {
-                  Cookies.remove("token");
-                  setUser(null);
-                  setModal(false);
+            <div
+              className="login"
+              onClick={() => {
+                setModal(true);
+              }}
+            >
+              {user === null ? (
+                // <Link to="/user/log_in">
+                <div>LOGIN </div>
+              ) : (
+                // </Link>
+                <div
+                  onClick={() => {
+                    Cookies.remove("token");
+                    setUser(null);
+                    setModal(false);
 
-                  history.push("/");
-                }}
-              >
-                LOGOUT
-              </div>
-            )}
+                    history.push("/");
+                  }}
+                >
+                  LOGOUT
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* menu  */}
+        {/* menu  */}
 
-      <nav>
-        <div className="menu container">
-          <Link to="/characters">
-            <div>CHARACTERS</div>
-          </Link>
-          <Link to="/comics">
-            <div>COMICS</div>
-          </Link>
-          <Link to="/favorites">
-            <div>FAVORITES</div>
-          </Link>
-        </div>
-      </nav>
-
+        <nav>
+          <div className="menu container">
+            <Link to="/characters">
+              <div>CHARACTERS</div>
+            </Link>
+            <Link to="/comics">
+              <div>COMICS</div>
+            </Link>
+            <Link to="/favorites">
+              <div>FAVORITES</div>
+              {favAdded === true && (
+                <div className="favorites-message-bloc">
+                  <FontAwesomeIcon
+                    icon="sort-up"
+                    className="favorites-message-icon"
+                  />
+                  <div className="favorites-message"> Added to favorites!</div>
+                </div>
+              )}
+            </Link>
+          </div>
+        </nav>
+      </div>
       {/* MODAL DU LOGIN */}
       {modal === true && (
         <div

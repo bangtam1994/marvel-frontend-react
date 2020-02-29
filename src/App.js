@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-
+import { Helmet } from "react-helmet";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Landing from "./containers/Landing";
@@ -19,9 +19,10 @@ import {
   faSearch,
   faChevronRight,
   faChevronLeft,
-  faHeart
+  faHeart,
+  faSortUp
 } from "@fortawesome/free-solid-svg-icons";
-library.add(faSearch, faChevronRight, faChevronLeft, faHeart);
+library.add(faSearch, faChevronRight, faChevronLeft, faHeart, faSortUp);
 
 function App() {
   //Va gérer l'état du cookie (présent ou non)
@@ -30,6 +31,7 @@ function App() {
     tokenFromCookie ? { token: tokenFromCookie } : null
   );
 
+  //Favori par les COOKIES
   const favCharacFromCookie = Cookies.get("favCharac");
   const [myFavCharacters, setMyFavCharacters] = useState(
     favCharacFromCookie ? favCharacFromCookie : null
@@ -40,9 +42,21 @@ function App() {
     favComicFromCookie ? favComicFromCookie : null
   );
 
+  //Favoris  par le USER
+  const [favCharacFromUser, setFavCharacFromUser] = useState([]);
+  const [favComicFromUser, setFavComicFromUser] = useState([]);
+
+  // Message quand un favori est ajouté
+  const [favAdded, setFavAdded] = useState(false);
+
   return (
     <Router>
-      <Header setUser={setUser} user={user} />
+      <Header
+        setUser={setUser}
+        user={user}
+        favAdded={favAdded}
+        setFavAdded={setFavAdded}
+      />
       <Switch>
         <Route exact path="/">
           <Landing />
@@ -51,29 +65,47 @@ function App() {
           <Signup />
         </Route>
         <Route exact path="/characters">
+          {/* <Helmet>
+            <meta charSet="utf-8" />
+            <title>Marvel characters</title> */}
           <Characters
             favCharacFromCookie={favCharacFromCookie}
             myFavCharacters={myFavCharacters}
             setMyFavCharacters={setMyFavCharacters}
+            favCharacFromUser={favCharacFromUser}
+            setFavCharacFromUser={setFavCharacFromUser}
+            token={tokenFromCookie}
+            user={user}
+            setFavAdded={setFavAdded}
           />
+          {/* </Helmet> */}
         </Route>
         <Route path="/character/:id">
           <Character />
         </Route>
 
         <Route path="/comics">
+          <meta charSet="utf-8" />
+          <title>Marvel comics</title>
           <Comics
             favComicFromCookie={favComicFromCookie}
             myFavComics={myFavComics}
             setMyFavComics={setMyFavComics}
+            setFavComicFromUser={setFavComicFromUser}
+            user={user}
+            setFavAdded={setFavAdded}
           />
         </Route>
         <Route path="/favorites">
           <Favorites
             myFavCharacters={myFavCharacters}
+            favCharacFromCookie={favCharacFromCookie}
             setMyFavCharacters={setMyFavCharacters}
             myFavComics={myFavComics}
             setMyFavComics={setMyFavComics}
+            favCharacFromUser={favCharacFromUser}
+            user={user}
+            favComicFromCookie={favComicFromCookie}
           />
         </Route>
       </Switch>

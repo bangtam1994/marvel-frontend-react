@@ -1,48 +1,82 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 function Favorites({
   myFavCharacters,
-  setMyFavCharacters,
+  favCharacFromCookie,
   myFavComics,
-  setMyFavComics
+  favComicFromCookie,
+  favCharacFromUser,
+  user
 }) {
   let history = useHistory();
+  const [dataCharacFav, setDataCharacFav] = useState([]); //Favoris cookies
+  const [isCookieCharacLoading, setIsCookieCharacLoading] = useState(true);
 
-  // const [isLoading, setIsLoading] = useState(true);
+  const [dataComicFav, setDataComicFav] = useState([]); //Favoris cookies
+  const [isCookieComicLoading, setIsCookieComicLoading] = useState(true);
 
-  //Requête au backend : j'envoie mon cookie favCharac ?
+  const [dataFavUser, setDataFavUser] = useState([]); //Favoris User
+  const [isUserLoading, setIsUserLoading] = useState(true);
 
-  // const fetchData = async cookie => {
+  // FAVORIS CHARAC EN COOKIE : Requête au backend
+  const fetchData = async cookie => {
+    try {
+      const response = await axios.get(
+        `https://marvel-backend-bt.herokuapp.com/favorites/charac?fav=${cookie}`
+      );
+      // console.log("LA REPONSE DU BACKEND EST : ", response.data);
+      setDataCharacFav(response.data);
+      // console.log("MON DATA FAV NOUVEAU EST", dataFav);
+      setIsCookieCharacLoading(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  // FAVORIS COMIC EN COOKIE : Requête au backend
+  const fetchData2 = async cookie => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/favorites/comics?fav=${cookie}`
+      );
+      // console.log("LA REPONSE DU BACKEND EST : ", response.data);
+      setDataComicFav(response.data);
+      // console.log("MON DATA FAV NOUVEAU EST", dataFav);
+      setIsCookieComicLoading(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  // // -------  FAVORIS EN USER : Requête au backend -----
+  // const fetchDataFromUser = async info => {
   //   try {
   //     const response = await axios.get(
-  //       `https://marvel-backend-bt.herokuapp.com/favorites?fav=${cookie}`
+  //       `http://localhost:4000/user/favorites?fav=${info}`
   //     );
-  //     setDataFav(response);
-  //     console.log("REPONSE DU BACKEND !!");
-  //     setIsLoading(false);
+  //     console.log("LA REPONSE DU BACKEND USER : ", response.data);
+  //     setDataFavUser(response.data);
+  //     console.log("MON DATAFAVUSER  EST", dataFavUser);
+  //     setIsUserLoading(false);
   //   } catch (error) {
   //     console.log(error.message);
   //   }
   // };
 
-  //J'appelle fetchData si j'ai un state avec un cookie
+  // ----- APPEL DE LA FONCTION FETCHDATA ----
+  // Pas connecté : fetchdata cookie
+  useEffect(() => {
+    fetchData(favCharacFromCookie);
+    console.log(favComicFromCookie);
+    fetchData2(favComicFromCookie);
+    console.log(">>", dataComicFav);
+  }, []);
 
+  // // Je suis connecté : j'appelle fetchDataFromUser pour récupérer les infos du User
   // useEffect(() => {
-  //   fetchData();
+  //   fetchDataFromUser(favCharacFromUser.toString());
   // }, []);
-
-  // Je transforme la cookie (string) de myFavCharacters et myFavComics en un tableau d'ID pour mapper par la suite dessus
-  let newFavCharacter;
-  let newFavComics;
-
-  if (myFavCharacters !== null) {
-    newFavCharacter = JSON.parse("[" + myFavCharacters + "]");
-  }
-
-  if (myFavComics !== null) {
-    newFavComics = JSON.parse("[" + myFavComics + "]");
-  }
 
   return (
     <>
@@ -54,44 +88,122 @@ function Favorites({
       </div>
 
       <div className="container d-flex space-between">
+        {/* BLOC CHARACTERS FAVORITES  */}
         <div className="favBloc">
-          <h2>My favorites characters</h2>
-          {myFavCharacters === null ? (
-            <div className="empty">No Favorites Characters added for now</div>
-          ) : (
+          {/* USER Pas connecté ----> FAVORIS EN COOKIE  */}
+          {user === null ? (
             <div>
-              {newFavCharacter.map((fav, index) => {
+              <h2>My favorites characters (COOKIE)</h2>
+              {myFavCharacters === null ? (
+                <div className="empty">
+                  No Favorites Characters added for now
+                </div>
+              ) : (
+                <div>
+                  {isCookieComicLoading ? (
+                    <div>Loading...</div>
+                  ) : (
+                    <div>
+                      {dataCharacFav.map(data => {
+                        return (
+                          <div
+                            className="favorites-card"
+                            onClick={() => {
+                              history.push(`/character/${data.id}`);
+                            }}
+                          >
+                            <img src={data.urlPicture} alt={data.name} />
+                            <div>
+                              <h3> {data.name}</h3>
+                              <div className=""> {data.description}</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ) : (
+            //  User connecté: favoris en BACKEND
+            <div>
+              <h2> My Favorites characters (User)</h2>
+              {dataFavUser.map(data => {
                 return (
                   <div
-                    className="favorites-list"
-                    key={index}
+                    className="favorites-card"
+                    key={data.id}
                     onClick={() => {
-                      history.push(`/character/${fav}`);
+                      history.push(`/character/${data.id}`);
                     }}
                   >
-                    {fav}
+                    <img src={data.urlPicture} alt={data.name} />
+                    <div>
+                      <h3> {data.name}</h3>
+                      <div className=""> {data.description}</div>
+                    </div>
                   </div>
                 );
               })}
             </div>
           )}
         </div>
+
+        {/* BLOC COMICS FAVORITES  */}
+
         <div className="favBloc">
-          <h2>My favorites comics</h2>
-          {myFavComics === null ? (
-            <div className="empty">No Favorites Comics added for now</div>
-          ) : (
+          {/* USER Pas connecté ----> FAVORIS EN COOKIE  */}
+          {user === null ? (
             <div>
-              {newFavComics.map((fav, index) => {
+              <h2>My favorites Comics (COOKIE)</h2>
+              {myFavComics === null ? (
+                <div className="empty">No Favorites Comics added for now</div>
+              ) : (
+                <>
+                  {isCookieComicLoading ? (
+                    <div> Loading...</div>
+                  ) : (
+                    <div>
+                      {dataComicFav.map(data => {
+                        return (
+                          <div
+                            className="favorites-card"
+                            onClick={() => {
+                              history.push(`/comics`);
+                            }}
+                          >
+                            <img src={data.urlPicture} alt={data.name} />
+                            <div>
+                              <h3> {data.name}</h3>
+                              <div className=""> {data.description}</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          ) : (
+            //  User connecté: favoris en BACKEND
+            <div>
+              <h2> My Favorites Comics (User)</h2>
+              {dataFavUser.map(data => {
                 return (
                   <div
-                    className="favorites-list"
-                    key={index}
+                    className="favorites-card"
+                    key={data.id}
                     onClick={() => {
                       history.push(`/comics`);
                     }}
                   >
-                    {fav}
+                    <img src={data.urlPicture} alt={data.name} />
+                    <div>
+                      <h3> {data.name}</h3>
+                      <div className=""> {data.description}</div>
+                    </div>
                   </div>
                 );
               })}

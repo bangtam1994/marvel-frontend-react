@@ -11,13 +11,19 @@ import sad from "../assets/images/hulk-sad.jpg";
 function Characters({
   myFavCharacters,
   setMyFavCharacters,
-  favCharacFromCookie
+  favCharacFromCookie,
+  token,
+  // favCharacFromUser,
+  // setFavCharacFromUser,
+  user,
+  setFavAdded
 }) {
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [favActive, setFavActive] = useState(false);
   let history = useHistory();
 
-  // Fonction pour récupérer les data
+  // Fonction pour récupérer les data et afficher tous les personnages
   const fetchData = async numberPage => {
     try {
       const response = await axios.get(
@@ -34,25 +40,53 @@ function Characters({
     fetchData();
   }, []);
 
-  //Fonction pour mettre en favori
+  //Fonction pour mettre en favori COOKIE
 
   const handleFav = id => {
     if (!favCharacFromCookie) {
-      console.log("Il considère que favCharacfromCookie est null ! ");
-
       //Si je n'ai renseigné aucun cookie jusque là
       Cookies.set("favCharac", id, { expires: 2 }); // favCharac, 1233112
       setMyFavCharacters(favCharacFromCookie);
-      console.log(">><<<<<<<<<>", myFavCharacters);
     } else {
-      console.log("Il considère que fav est déjà rempli ! ");
-
       Cookies.set("favCharac", favCharacFromCookie + "," + id, { expires: 2 });
       setMyFavCharacters(favCharacFromCookie);
-      console.log(">>>>>>", myFavCharacters);
-      console.log(typeof myFavCharacters);
     }
   };
+
+  // Fonction pour remove des favoris Cookies
+  const handleRemoveFav = id => {
+    let fav = Cookies.get("favCharac");
+    let tabFav = JSON.parse("[" + fav + "]");
+    let index = tabFav.indexOf(id);
+    if (index > -1) {
+      tabFav.splice(index, 1);
+    }
+    Cookies.set("favCharac", tabFav.toString(), { expires: 2 });
+  };
+
+  // Fonction pour mettre en favori MONGODB
+
+  // const handleFavUser = async id => {
+  //   try {
+  //     const response = await axios.post(
+  //       `http://localhost:4000/user/add/favorites`,
+  //       {
+  //         marvelId: id
+  //       },
+
+  //       {
+  //         headers: {
+  //           Authorization: "Bearer " + token
+  //         }
+  //       }
+  //     );
+  //     console.log("réponse de l'API pour le Fav USER:", response.data);
+  //     alert("Booked in backend !");
+  //     setFavCharacFromUser(response.data.user.favorites); //Les favoris (tableau) sont une clé dans l'objet user du backend.
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // };
 
   return (
     <>
@@ -73,6 +107,16 @@ function Characters({
             <div className="characters-list container">
               {data.results.map(result => {
                 const LinkToCharacter = `/character/${result.id}`;
+                let iconStatus = false;
+                if (
+                  favCharacFromCookie &&
+                  favCharacFromCookie
+                    .split(",")
+                    .indexOf(result.id.toString()) !== -1
+                ) {
+                  //Si j'ai trouvé mon id dans mes cookies
+                  iconStatus = true;
+                }
 
                 return (
                   <div
@@ -91,16 +135,53 @@ function Characters({
                       alt={result.name}
                       className="card-image"
                     />
-                    <FontAwesomeIcon
-                      className="icon-heart"
-                      icon="heart"
-                      onClick={e => {
-                        e.stopPropagation();
-                        handleFav(result.id);
-                        alert("Booked as Fav !");
-                      }}
-                    />
-
+                    {/* Si connecté : favoris en backend  */}
+                    {/* {user ? (
+                      <FontAwesomeIcon
+                        className={
+                          // favActivated === true
+                          //   ? "icon-heart activated" :
+                          "icon-heart"
+                        }
+                        icon="heart"
+                        onClick={e => {
+                          e.stopPropagation();
+                          handleFavUser(result.id);
+                          alert("Booked as Fav!");
+                        }}
+                      />
+                    ) : ( */}
+                    {/* // Si pas connecté : favoris en cookie */}
+                    <>
+                      {iconStatus === true ? (
+                        <FontAwesomeIcon
+                          className={"icon-heart-active"}
+                          icon="heart"
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleRemoveFav(result.id);
+                            setFavAdded(true);
+                            setTimeout(() => {
+                              setFavAdded(false);
+                            }, 2000);
+                          }}
+                        />
+                      ) : (
+                        <FontAwesomeIcon
+                          className="icon-heart"
+                          icon="heart"
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleFav(result.id);
+                            setFavAdded(true);
+                            setTimeout(() => {
+                              setFavAdded(false);
+                            }, 2000);
+                          }}
+                        />
+                      )}
+                    </>
+                    }
                     <div className="card-details">
                       <h2>{result.name} </h2>
                       <p>{result.description} </p>

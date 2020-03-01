@@ -1,72 +1,100 @@
-## MARVEL FRONTEND IN REACT
+<h1  align="center">Marvel FrontEnd</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+  <p align="center">
+	<img src="https://github.com/bangtam1994/marvel-frontend-react/tree/master/src/assets/images/marvel-front.gif" width="800">
+</p>
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+Replica of Marvel website in React ; Fullstack project.
+Inspiration : marvel.com
 
-### `yarn start`
+**Client**
+Netlify : <a  href="https://marvel-frontend-by-bt.netlify.com/"  target="_blank"> https://marvel-frontend-by-bt.netlify.com/</a>
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+<p align="center">
+<a  href="https://marvel-frontend-by-bt.netlify.com/"><img  src="https://i.ibb.co/pQjwJ7N/Capture-d-e-cran-2020-02-29-a-23-27-39.png" width="500" title="Marvel frontend "  alt="Marvel frontend"></a>
+</p>
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+**Server**
 
-### `yarn test`
+GitHub : <a  href="[https://github.com/bangtam1994/marvel-frontend-react](https://github.com/bangtam1994/marvel-frontend-react)">[https://github.com/bangtam1994/marvel-frontend-react](https://github.com/bangtam1994/marvel-frontend-react)</a>
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Heroku : <a  href="https://marvel-frontend-by-bt.netlify.com/"  target="_blank"> [https://marvel-backend-bt.herokuapp.com/](https://marvel-backend-bt.herokuapp.com/)</a>
 
-### `yarn build`
+API used : https://developer.marvel.com/
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Packages
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+- React
+- React Router DOM
+- Axios
+- Js-Cookie
+- Helmet
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Architecture
 
-### `yarn eject`
+- Header, Footer
+- Characters, Comics
+- Character (page to display the character by id-
+- SearchCharacter, SearchComic (searchbar)
+- Signin, Signup : create account (hosted in Mlab) & login to add Favorites
+- Favorites : 2 possibilities; if user connected --> Favorites from user document ; if user not connected --> Favorites from cookies
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Running the project
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Clone this repository :
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+git clone https://github.com/bangtam1994/marvel-frontend-react.git
 
-## Learn More
+cd marvel-frontend
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+To install packages :
 
-### Code Splitting
+```
+npm install
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+or
 
-### Analyzing the Bundle Size
+```
+yarn add
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+When installation is complete, run the project with:
 
-### Making a Progressive Web App
+```
+yarn start or npm start
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+## Marvel API
 
-### Advanced Configuration
+- Express
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+- HTTP request with axios (get, post)
 
-### Deployment
+- Users : hosted in MongoDB
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+Please check :
+<a  href="[https://github.com/bangtam1994/marvel-backend](https://github.com/bangtam1994/marvel-frontend-react)">[https://github.com/bangtam1994/marvel-backend](https://github.com/bangtam1994/marvel-frontend-react)</a>
 
-### `yarn build` fails to minify
+## Deployment
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+- Client : deployed with Netlify
 
-# marvel-frontend-react
+- Server : deployed with Heroku
+
+- MongoDb database : hosted on Mlab
+
+## Contact
+
+<a  href="[https://www.linkedin.com/in/bangtamnguyen/](https://www.linkedin.com/in/bangtamnguyen/)"  target="_blank"> <img src="https://salon-ctco.com/wp-content/uploads/2018/09/Logo-LinkedIn.png" 
+width="45"
+/></a>
+<a  href="mailto:bangtam1994@hotmail.com"  target="_blank"> <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" 
+width="40"
+/></a>

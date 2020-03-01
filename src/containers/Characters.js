@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Helmet } from "react-helmet";
+
 import { useHistory } from "react-router-dom";
 import SearchCharacter from "../components/SearchCharacter";
 import Pagination from "../components/Pagination";
@@ -12,22 +14,22 @@ function Characters({
   myFavCharacters,
   setMyFavCharacters,
   favCharacFromCookie,
-  // favCharacFromUser,
-  // setFavCharacFromUser,
+  favCharacFromUser,
+  setFavCharacFromUser,
+  token,
   user,
   setFavAdded,
   setFavRemoved
 }) {
   const [data, setData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [favActive, setFavActive] = useState(false);
   let history = useHistory();
 
   // Fonction pour récupérer les data et afficher tous les personnages
   const fetchData = async numberPage => {
     try {
       const response = await axios.get(
-        `https://marvel-backend-bt.herokuapp.com/characters?page=${numberPage}`
+        `hhttps://marvel-backend-bt.herokuapp.com/characters?page=${numberPage}`
       );
       setData(response.data.data);
       setIsLoading(false);
@@ -35,10 +37,6 @@ function Characters({
       console.log(error.message);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   //Fonction pour mettre en favori COOKIE
 
@@ -66,30 +64,78 @@ function Characters({
 
   // Fonction pour mettre en favori MONGODB
 
-  // const handleFavUser = async id => {
-  //   try {
-  //     const response = await axios.post(
-  //       `http://localhost:4000/user/add/favorites`,
-  //       {
-  //         marvelId: id
-  //       },
+  const handleFavUser = async id => {
+    try {
+      const response = await axios.post(
+        `https://marvel-backend-bt.herokuapp.com/user/add/favorites`,
+        {
+          marvelId: id,
+          type: "charac"
+        },
 
-  //       {
-  //         headers: {
-  //           Authorization: "Bearer " + token
-  //         }
-  //       }
-  //     );
-  //     console.log("réponse de l'API pour le Fav USER:", response.data);
-  //     alert("Booked in backend !");
-  //     setFavCharacFromUser(response.data.user.favorites); //Les favoris (tableau) sont une clé dans l'objet user du backend.
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  // };
+        {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        }
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  // Fonction pour remove des favori MONGODB
+  const handleRemoveFavUser = async id => {
+    try {
+      const response = await axios.post(
+        `https://marvel-backend-bt.herokuapp.com/user/delete/favorites`,
+        {
+          marvelId: id,
+          type: "charac"
+        },
+
+        {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        }
+      );
+      if (response.data === "Favorite deleted") {
+        setFavCharacFromUser(response.data);
+      }
+      // setFavCharacFromUser(response.data.user.favorites); //Les favoris (tableau) sont une clé dans l'objet user du backend.
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  //Checker les favoris du User
+  const fetchFavUser = async () => {
+    try {
+      const response = await axios.get(
+        "https://marvel-backend-bt.herokuapp.com/user/favorites/check",
+        {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        }
+      );
+      setFavCharacFromUser(response.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    fetchFavUser();
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <title>Marvel characters</title>
+      </Helmet>
       <div className="banner">
         <div className="banner-characters">
           <h1>CHARACTERS </h1>
@@ -108,16 +154,26 @@ function Characters({
               {data.results.map(result => {
                 const LinkToCharacter = `/character/${result.id}`;
                 let iconStatus = false;
-                if (
-                  favCharacFromCookie &&
-                  favCharacFromCookie
-                    .split(",")
-                    .indexOf(result.id.toString()) !== -1
-                ) {
-                  //Si j'ai trouvé mon id dans mes cookies
-                  iconStatus = true;
+                if (user) {
+                  //Si je suis connecté, je vais chercher les favoris de User
+                  for (let i = 0; i < favCharacFromUser.length; i++) {
+                    if (favCharacFromUser[i].marvelId === result.id) {
+                      iconStatus = true;
+                      break;
+                    }
+                  }
+                } else {
+                  // Si je ne suis pas connecté
+                  if (
+                    favCharacFromCookie &&
+                    favCharacFromCookie
+                      .split(",")
+                      .indexOf(result.id.toString()) !== -1
+                  ) {
+                    //Si j'ai trouvé mon id dans mes cookies
+                    iconStatus = true;
+                  }
                 }
-
                 return (
                   <div
                     key={result.id}
@@ -135,52 +191,70 @@ function Characters({
                       alt={result.name}
                       className="card-image"
                     />
-                    {/* Si connecté : favoris en backend  */}
-                    {/* {user ? (
-                      <FontAwesomeIcon
-                        className={
-                          // favActivated === true
-                          //   ? "icon-heart activated" :
-                          "icon-heart"
-                        }
-                        icon="heart"
-                        onClick={e => {
-                          e.stopPropagation();
-                          handleFavUser(result.id);
-                          alert("Booked as Fav!");
-                        }}
-                      />
-                    ) : ( */}
-                    {/* // Si pas connecté : favoris en cookie */}
-                    <>
-                      {iconStatus === true ? (
-                        <FontAwesomeIcon
-                          className={"icon-heart-active"}
-                          icon="heart"
-                          onClick={e => {
-                            e.stopPropagation();
-                            handleRemoveFav(result.id);
-                            setFavRemoved(true);
-                            setTimeout(() => {
-                              setFavRemoved(false);
-                            }, 2000);
-                          }}
-                        />
-                      ) : (
-                        <FontAwesomeIcon
-                          className="icon-heart"
-                          icon="heart"
-                          onClick={e => {
-                            e.stopPropagation();
-                            handleFav(result.id);
-                            setFavAdded(true);
-                            setTimeout(() => {
-                              setFavAdded(false);
-                            }, 2000);
-                          }}
-                        />
-                      )}
-                    </>
+                    {user ? (
+                      //User connecté  ---> MONGODB
+                      <>
+                        {iconStatus === true ? (
+                          <FontAwesomeIcon
+                            className={"icon-heart-active"}
+                            icon="heart"
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleRemoveFavUser(result.id);
+                              setFavRemoved(true);
+                              setTimeout(() => {
+                                setFavRemoved(false);
+                              }, 2000);
+                            }}
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            className="icon-heart"
+                            icon="heart"
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleFavUser(result.id);
+                              setFavAdded(true);
+                              setTimeout(() => {
+                                setFavAdded(false);
+                              }, 2000);
+                            }}
+                          />
+                        )}
+                      </>
+                    ) : (
+                      //User pas connecté ---> COOKIES
+
+                      <>
+                        {iconStatus === true ? (
+                          <FontAwesomeIcon
+                            className={"icon-heart-active"}
+                            icon="heart"
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleRemoveFav(result.id);
+                              setFavRemoved(true);
+                              setTimeout(() => {
+                                setFavRemoved(false);
+                              }, 2000);
+                            }}
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            className="icon-heart"
+                            icon="heart"
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleFav(result.id);
+                              setFavAdded(true);
+                              setTimeout(() => {
+                                setFavAdded(false);
+                              }, 2000);
+                            }}
+                          />
+                        )}
+                      </>
+                    )}
                     }
                     <div className="card-details">
                       <h2>{result.name} </h2>
@@ -189,6 +263,7 @@ function Characters({
                   </div>
                 );
               })}
+
               <Pagination
                 data={data}
                 setData={setData}

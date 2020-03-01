@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Helmet } from "react-helmet";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Landing from "./containers/Landing";
@@ -43,8 +42,8 @@ function App() {
   );
 
   //Favoris  par le USER
-  const [favCharacFromUser, setFavCharacFromUser] = useState([]);
-  const [favComicFromUser, setFavComicFromUser] = useState([]);
+  const [favCharacFromUser, setFavCharacFromUser] = useState();
+  const [favComicFromUser, setFavComicFromUser] = useState();
 
   // Message quand un favori est ajouté ou retiré
   const [favAdded, setFavAdded] = useState(false);
@@ -66,9 +65,6 @@ function App() {
           <Signup />
         </Route>
         <Route exact path="/characters">
-          {/* <Helmet>
-            <meta charSet="utf-8" />
-            <title>Marvel characters</title> */}
           <Characters
             favCharacFromCookie={favCharacFromCookie}
             myFavCharacters={myFavCharacters}
@@ -80,7 +76,6 @@ function App() {
             setFavAdded={setFavAdded}
             setFavRemoved={setFavRemoved}
           />
-          {/* </Helmet> */}
         </Route>
         <Route path="/character/:id">
           <Character />
@@ -93,6 +88,7 @@ function App() {
             favComicFromCookie={favComicFromCookie}
             myFavComics={myFavComics}
             setMyFavComics={setMyFavComics}
+            favComicFromUser={favComicFromUser}
             setFavComicFromUser={setFavComicFromUser}
             user={user}
             setFavAdded={setFavAdded}
@@ -109,6 +105,7 @@ function App() {
             favCharacFromUser={favCharacFromUser}
             user={user}
             favComicFromCookie={favComicFromCookie}
+            token={tokenFromCookie}
           />
         </Route>
       </Switch>

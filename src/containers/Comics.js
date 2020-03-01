@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 import SearchComics from "../components/SearchComics";
 import Pagination from "../components/Pagination";
 import Cookies from "js-cookie";
@@ -12,6 +13,7 @@ function Comics({
   setMyFavComics,
   favComicFromCookie,
   setFavAdded,
+  favComicFromUser,
   setFavComicFromUser,
   user,
   token,
@@ -32,10 +34,6 @@ function Comics({
       console.log(error.message);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   //Fonction pour mettre en favori COOKIE
 
@@ -66,9 +64,10 @@ function Comics({
   const handleFavUser = async id => {
     try {
       const response = await axios.post(
-        `http://localhost:4000/user/add/favorites`,
+        `https://marvel-backend-bt.herokuapp.com/user/add/favorites`,
         {
-          marvelId: id
+          marvelId: id,
+          type: "comic"
         },
         {
           headers: {
@@ -76,16 +75,62 @@ function Comics({
           }
         }
       );
-      console.log("réponse de l'API pour le Fav USER:", response.data);
-      alert("Booked in backend !");
-      setFavComicFromUser(response.data.user.favorites); //Les favoris (tableau) sont une clé dans l'objet user du backend.
     } catch (error) {
       console.log(error.message);
     }
   };
 
+  // Fonction pour remove des favori MONGODB
+  const handleRemoveFavUser = async id => {
+    try {
+      const response = await axios.post(
+        `https://marvel-backend-bt.herokuapp.com/user/delete/favorites`,
+        {
+          marvelId: id,
+          type: "comic"
+        },
+
+        {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        }
+      );
+      if (response.data === "Favorite deleted") {
+        setFavComicFromUser(response.data);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  //Checker les favoris du User
+  const fetchFavUser = async () => {
+    try {
+      const response = await axios.get(
+        "https://marvel-backend-bt.herokuapp.com/user/favorites/check",
+        {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        }
+      );
+      setFavComicFromUser(response.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    fetchFavUser();
+  }, []);
+
   return (
     <>
+      <Helmet>
+        <title>Marvel characters</title>
+      </Helmet>
       <div className="banner">
         <div className="banner-comics">
           <h1>COMICS </h1>
@@ -103,16 +148,26 @@ function Comics({
             <div className="characters-list container">
               {data.results.map(result => {
                 let iconStatus = false;
-                if (
-                  favComicFromCookie &&
-                  favComicFromCookie
-                    .split(",")
-                    .indexOf(result.id.toString()) !== -1
-                ) {
-                  //Si j'ai trouvé mon id dans mes cookies
-                  iconStatus = true;
+                if (user) {
+                  //Si je suis connecté, je vais chercher les favoris de User
+                  for (let i = 0; i < favComicFromUser.length; i++) {
+                    if (favComicFromUser[i].marvelId === result.id) {
+                      iconStatus = true;
+                      break;
+                    }
+                  }
+                } else {
+                  // Si je ne suis pas connecté
+                  if (
+                    favComicFromCookie &&
+                    favComicFromCookie
+                      .split(",")
+                      .indexOf(result.id.toString()) !== -1
+                  ) {
+                    //Si j'ai trouvé mon id dans mes cookies
+                    iconStatus = true;
+                  }
                 }
-
                 return (
                   <div key={result.id} className="comic-bloc">
                     <img
@@ -125,19 +180,37 @@ function Comics({
                       className="card-image"
                     />
                     {user ? (
-                      <FontAwesomeIcon
-                        className={
-                          // favActivated === true
-                          //   ? "icon-heart activated" :
-                          "icon-2-heart"
-                        }
-                        icon="heart"
-                        onClick={e => {
-                          e.stopPropagation();
-                          handleFavUser(result.id);
-                          alert("Booked as Fav!");
-                        }}
-                      />
+                      //User connecté  ---> MONGODB
+
+                      <>
+                        {iconStatus === true ? (
+                          <FontAwesomeIcon
+                            className={"icon-2-heart-active"}
+                            icon="heart"
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleRemoveFavUser(result.id);
+                              setFavRemoved(true);
+                              setTimeout(() => {
+                                setFavRemoved(false);
+                              }, 2000);
+                            }}
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            className="icon-2-heart"
+                            icon="heart"
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleFavUser(result.id);
+                              setFavAdded(true);
+                              setTimeout(() => {
+                                setFavAdded(false);
+                              }, 2000);
+                            }}
+                          />
+                        )}
+                      </>
                     ) : (
                       // Si pas connecté : favoris en cookie
                       <>

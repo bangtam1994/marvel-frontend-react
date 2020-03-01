@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 import { useParams } from "react-router-dom";
 
@@ -47,6 +48,9 @@ function Character(props) {
             {infoCharacter.results.map(info => {
               return (
                 <div key={info.id} className="d-flex">
+                  <Helmet>
+                    <title>Marvel | {info.name}</title>
+                  </Helmet>
                   <img
                     src={
                       info.thumbnail.path +

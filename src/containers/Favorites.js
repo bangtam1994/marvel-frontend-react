@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 function Favorites({
   myFavCharacters,
@@ -8,7 +9,8 @@ function Favorites({
   myFavComics,
   favComicFromCookie,
   favCharacFromUser,
-  user
+  user,
+  token
 }) {
   let history = useHistory();
   const [dataCharacFav, setDataCharacFav] = useState([]); //Favoris cookies
@@ -17,7 +19,7 @@ function Favorites({
   const [dataComicFav, setDataComicFav] = useState([]); //Favoris cookies
   const [isCookieComicLoading, setIsCookieComicLoading] = useState(true);
 
-  const [dataFavUser, setDataFavUser] = useState([]); //Favoris User
+  const [dataFavUser, setDataFavUser] = useState({}); //Favoris User
   const [isUserLoading, setIsUserLoading] = useState(true);
 
   // FAVORIS CHARAC EN COOKIE : Requête au backend
@@ -26,9 +28,7 @@ function Favorites({
       const response = await axios.get(
         `https://marvel-backend-bt.herokuapp.com/favorites/charac?fav=${cookie}`
       );
-      // console.log("LA REPONSE DU BACKEND EST : ", response.data);
       setDataCharacFav(response.data);
-      // console.log("MON DATA FAV NOUVEAU EST", dataFav);
       setIsCookieCharacLoading(false);
     } catch (error) {
       console.log(error.message);
@@ -38,48 +38,52 @@ function Favorites({
   const fetchData2 = async cookie => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/favorites/comics?fav=${cookie}`
+        `https://marvel-backend-bt.herokuapp.com/favorites/comics?fav=${cookie}`
       );
-      // console.log("LA REPONSE DU BACKEND EST : ", response.data);
       setDataComicFav(response.data);
-      // console.log("MON DATA FAV NOUVEAU EST", dataFav);
       setIsCookieComicLoading(false);
     } catch (error) {
       console.log(error.message);
     }
   };
 
-  // // -------  FAVORIS EN USER : Requête au backend -----
-  // const fetchDataFromUser = async info => {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:4000/user/favorites?fav=${info}`
-  //     );
-  //     console.log("LA REPONSE DU BACKEND USER : ", response.data);
-  //     setDataFavUser(response.data);
-  //     console.log("MON DATAFAVUSER  EST", dataFavUser);
-  //     setIsUserLoading(false);
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  // };
+  //  -------  FAVORIS EN USER : Requête au backend -----
+  const fetchFavUser = async () => {
+    try {
+      const response = await axios.get(
+        "https://marvel-backend-bt.herokuapp.com/user/favorites/",
+        {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        }
+      );
+
+      setDataFavUser(response.data);
+      setIsUserLoading(false);
+      console.log(dataFavUser);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   // ----- APPEL DE LA FONCTION FETCHDATA ----
   // Pas connecté : fetchdata cookie
   useEffect(() => {
-    fetchData(favCharacFromCookie);
-    console.log(favComicFromCookie);
-    fetchData2(favComicFromCookie);
-    console.log(">>", dataComicFav);
+    if (!user) {
+      fetchData(favCharacFromCookie);
+      fetchData2(favComicFromCookie);
+    } else {
+      //Connecté, appel fetchDataFav à MongoDB
+      fetchFavUser();
+    }
   }, []);
-
-  // // Je suis connecté : j'appelle fetchDataFromUser pour récupérer les infos du User
-  // useEffect(() => {
-  //   fetchDataFromUser(favCharacFromUser.toString());
-  // }, []);
 
   return (
     <>
+      <Helmet>
+        <title>My favorites</title>
+      </Helmet>
       <div className="banner">
         <div className="banner-favorites">
           <h1>FAVORITES </h1>
@@ -93,7 +97,7 @@ function Favorites({
           {/* USER Pas connecté ----> FAVORIS EN COOKIE  */}
           {user === null ? (
             <div>
-              <h2>My favorites characters (COOKIE)</h2>
+              <h2>My favorites characters</h2>
               {myFavCharacters === null ? (
                 <div className="empty">
                   No Favorites Characters added for now
@@ -128,24 +132,30 @@ function Favorites({
           ) : (
             //  User connecté: favoris en BACKEND
             <div>
-              <h2> My Favorites characters (User)</h2>
-              {dataFavUser.map(data => {
-                return (
-                  <div
-                    className="favorites-card"
-                    key={data.id}
-                    onClick={() => {
-                      history.push(`/character/${data.id}`);
-                    }}
-                  >
-                    <img src={data.urlPicture} alt={data.name} />
-                    <div>
-                      <h3> {data.name}</h3>
-                      <div className=""> {data.description}</div>
-                    </div>
-                  </div>
-                );
-              })}
+              <h2> My Favorites characters</h2>
+              {isUserLoading === true ? (
+                <div> Loading Favorites info...</div>
+              ) : (
+                <>
+                  {dataFavUser.charac.map(data => {
+                    return (
+                      <div
+                        className="favorites-card"
+                        key={data.id}
+                        onClick={() => {
+                          history.push(`/character/${data.id}`);
+                        }}
+                      >
+                        <img src={data.urlPicture} alt={data.name} />
+                        <div>
+                          <h3> {data.name}</h3>
+                          <div className=""> {data.description}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </>
+              )}
             </div>
           )}
         </div>
@@ -156,7 +166,7 @@ function Favorites({
           {/* USER Pas connecté ----> FAVORIS EN COOKIE  */}
           {user === null ? (
             <div>
-              <h2>My favorites Comics (COOKIE)</h2>
+              <h2>My favorites Comics</h2>
               {myFavComics === null ? (
                 <div className="empty">No Favorites Comics added for now</div>
               ) : (
@@ -189,24 +199,30 @@ function Favorites({
           ) : (
             //  User connecté: favoris en BACKEND
             <div>
-              <h2> My Favorites Comics (User)</h2>
-              {dataFavUser.map(data => {
-                return (
-                  <div
-                    className="favorites-card"
-                    key={data.id}
-                    onClick={() => {
-                      history.push(`/comics`);
-                    }}
-                  >
-                    <img src={data.urlPicture} alt={data.name} />
-                    <div>
-                      <h3> {data.name}</h3>
-                      <div className=""> {data.description}</div>
-                    </div>
-                  </div>
-                );
-              })}
+              <h2> My Favorites Comics</h2>
+              {isUserLoading === true ? (
+                <div> Loading Favorites info...</div>
+              ) : (
+                <>
+                  {dataFavUser.comic.map(data => {
+                    return (
+                      <div
+                        className="favorites-card"
+                        key={data.id}
+                        onClick={() => {
+                          history.push(`/character/${data.id}`);
+                        }}
+                      >
+                        <img src={data.urlPicture} alt={data.name} />
+                        <div>
+                          <h3> {data.name}</h3>
+                          <div className=""> {data.description}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </>
+              )}
             </div>
           )}
         </div>

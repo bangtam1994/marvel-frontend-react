@@ -20,7 +20,7 @@ function Signup() {
       alert("Password are not matching ! Retry");
     } else {
       await axios
-        .post("https://marvel-backend-bt.herokuapp.com/user/sign_up", {
+        .post("http://localhost:4000/user/sign_up", {
           username,
           email,
           password

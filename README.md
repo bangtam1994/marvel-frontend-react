@@ -1,7 +1,7 @@
 <h1  align="center">Marvel FrontEnd</h1>
 
   <p align="center">
-	<img src="https://github.com/bangtam1994/marvel-frontend-react/tree/master/src/assets/images/marvel-front.gif" width="800">
+	<img src="https://thumbs.gfycat.com/BitesizedTightElephant-size_restricted.gif" width="800">
 </p>
 
 ## Overview
@@ -18,7 +18,7 @@ Netlify : <a  href="https://marvel-frontend-by-bt.netlify.com/"  target="_blank"
 
 **Server**
 
-GitHub : <a  href="[https://github.com/bangtam1994/marvel-frontend-react](https://github.com/bangtam1994/marvel-frontend-react)">[https://github.com/bangtam1994/marvel-frontend-react](https://github.com/bangtam1994/marvel-frontend-react)</a>
+GitHub : <a  href="[https://github.com/bangtam1994/marvel-frontend-react](https://github.com/bangtam1994/marvel-frontend-react)">https://github.com/bangtam1994/marvel-backend</a>
 
 Heroku : <a  href="https://marvel-frontend-by-bt.netlify.com/"  target="_blank"> [https://marvel-backend-bt.herokuapp.com/](https://marvel-backend-bt.herokuapp.com/)</a>
 
@@ -36,7 +36,7 @@ API used : https://developer.marvel.com/
 
 - Header, Footer
 - Characters, Comics
-- Character (page to display the character by id-
+- Character (page to display the character by id)
 - SearchCharacter, SearchComic (searchbar)
 - Signin, Signup : create account (hosted in Mlab) & login to add Favorites
 - Favorites : 2 possibilities; if user connected --> Favorites from user document ; if user not connected --> Favorites from cookies
@@ -47,7 +47,7 @@ Clone this repository :
 
 ```
 
-git clone https://github.com/bangtam1994/marvel-frontend-react.git
+git clone https://github.com/bangtam1994/marvel-backend.git
 
 cd marvel-frontend
 

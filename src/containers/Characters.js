@@ -29,7 +29,7 @@ function Characters({
   const fetchData = async numberPage => {
     try {
       const response = await axios.get(
-        `hhttps://marvel-backend-bt.herokuapp.com/characters?page=${numberPage}`
+        `https://marvel-backend-bt.herokuapp.com/characters?page=${numberPage}`
       );
       setData(response.data.data);
       setIsLoading(false);

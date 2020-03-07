@@ -92,7 +92,7 @@ Please check :
 
 ## Contact
 
-<a  href="[https://www.linkedin.com/in/bangtamnguyen/](https://www.linkedin.com/in/bangtamnguyen/)"  target="_blank"> <img src="https://salon-ctco.com/wp-content/uploads/2018/09/Logo-LinkedIn.png" 
+<a  href="https://www.linkedin.com/in/bangtamnguyen"  target="_blank"> <img src="https://salon-ctco.com/wp-content/uploads/2018/09/Logo-LinkedIn.png" 
 width="45"
 /></a>
 <a  href="mailto:bangtam1994@hotmail.com"  target="_blank"> <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" 
